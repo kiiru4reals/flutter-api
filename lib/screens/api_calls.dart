@@ -3,18 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class ApiCalls extends StatefulWidget {
-  const ApiCalls({Key? key}) : super(key: key);
+class TestWidget extends StatefulWidget {
+  const TestWidget({Key? key}) : super(key: key);
 
   @override
-  _ApiCallsState createState() => _ApiCallsState();
+  _TestWidgetState createState() => _TestWidgetState();
 }
 
-class _ApiCallsState extends State<ApiCalls> {
+class _TestWidgetState extends State<TestWidget> {
   // String? stringResponse;
   // late List listResponse;
-  late Map mapResponse;
-  late List listOfFacts;
+  Map? mapResponse;
+  List? listOfFacts;
 
   Future fetchData() async{
     http.Response response;
@@ -24,7 +24,7 @@ class _ApiCallsState extends State<ApiCalls> {
       // then parse the JSON.
       setState(() {
         mapResponse = jsonDecode(response.body);
-        listOfFacts = mapResponse['facts'];
+        listOfFacts = mapResponse!['facts'];
       });
     } else {
       // If the server did not return a 200 OK response,
@@ -47,22 +47,29 @@ class _ApiCallsState extends State<ApiCalls> {
           centerTitle: true,
           title: Text("API Testing"),
         ),
-        body: mapResponse == null ? Container() :ListView.builder(
+        body: mapResponse == null ? Container(
+          child: Center(
+            child: Text("Nothing to show here :(", style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold
+            ),),
+          ),
+        ) :ListView.builder(
           shrinkWrap: true,
           itemBuilder: (context, index){
             return Container(
               child: Column(
                 children: <Widget>[
-                  Image.network(listOfFacts[index]['image_url']),
-                  Text(listOfFacts[index]['title'].toString()),
-                  Text(listOfFacts[index]['description'].toString())
+                  Image.network(listOfFacts![index]['image_url']),
+                  Text(listOfFacts![index]['title'].toString()),
+                  Text(listOfFacts![index]['description'].toString())
                 ],
               ),
 
             );
 
           },
-          itemCount: listOfFacts==null ? 0 : listOfFacts.length,
+          itemCount: listOfFacts==null ? 0 : listOfFacts!.length,
         )
     );
   }
